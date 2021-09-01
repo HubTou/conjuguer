@@ -1,0 +1,118 @@
+.Dd August 31, 2021
+.Dt CONJUGUER 1
+.Os
+.Sh NAME
+.Nm conjuguer
+.Nd conjugaison des verbes Francais
+.Sh SYNOPSIS
+.Nm
+.Op Fl c|--columns Ar NUM
+.Op Fl d|--dictionary Ar PATH
+.Op Fl n|--nocolor
+.Op Fl -debug
+.Op Fl -help|-?
+.Op Fl -version
+.Op Fl -
+.Ar verb
+.Op Ar ...
+.Sh DESCRIPTION
+The
+.Nm
+utility displays a French conjugation table for the verbs supplied on the command line.
+.Pp
+It will display the verb modes and tenses in color, unless you use the
+.Fl n|--nocolor
+option.
+.Pp
+The display will be made in 4 columns, Bescherelle style (a famous verbs dictionary),
+or in 1 or 2 columns if you use the
+.Fl c|--columns
+option.
+.Pp
+The data is obtained from a DELA or ABU type inflected French dictionary, rather than generated.
+The dictionary will be selected from the
+.Ev DICTPATH
+environment variable, or obtained from the
+.Fl d|--dictionary
+option if used. The dictionary type is automatically detected.
+.Ss OPTIONS
+.Op Fl c|--columns Ar NUM
+Choose number of columns to display between 1, 2 or 4
+.Pp
+.Op Fl d|--dictionary Ar PATH
+Select a specific dictionary
+.Pp
+.Op Fl n|--nocolor
+Disable color output
+.Pp
+.Op Fl -debug
+Enable debug mode
+.Pp
+.Op Fl -help|-?
+Print usage and this help message and exit
+.Pp
+.Op Fl -version
+Print version and exit
+.Pp
+.Op Fl -
+Options processing terminator
+.Sh ENVIRONMENT
+The
+.Ev CONJUGUER_DEBUG
+environment variable can be set to any value to enable debug mode.
+.Pp
+The
+.Ev DICTPATH
+environment variable is searched for one of the default dictionary files.
+.Pp
+Alternatively, the
+.Ev CONJUGUER_DICT
+environment variable can also be set to the path of the dictionary file you want to use.
+.Sh FILES
+The
+.Pa dict-fr-DELA
+file is the preferred dictionary used, if found in the
+.Ev DICTPATH .
+.Pp
+Else, the
+.Pa dict-fr-ABU-mots_communs
+file (which contains half of the verbs in the DELA) will be used instead.
+.Sh EXIT STATUS
+.Ex -std conjuguer
+.Sh SEE ALSO
+.Xr typo 1
+.Xr spell 1 ,
+.Xr ispell 1 ,
+.Xr aspell 1 ,
+.Xr hunspell 1 ,
+.Xr dict 7
+.Sh STANDARDS
+The
+.Nm
+utility is not a standard UNIX command.
+.Pp
+This utility tries to follow the PEP 8 style guide for Python code.
+.Sh HISTORY
+This utility was made for the
+.Lk https://github.com/HubTou/PNU PNU project
+both as a way to test inflected dictionaries, and to validate the data inside.
+.Sh LICENSE
+It is available under the 3-clause BSD license.
+.Sh AUTHORS
+.An Hubert Tournier
+.Pp
+The source code also includes a snippet of code from Martijn Pieters,
+for stripping ANSI sequences in strings.
+.Sh CAVEATS
+The results are only as good (or bad) as what's included in the dictionary used.
+The data in both the ABU and DELA dictionaries obviously contains errors, often on the same verbs...
+I do not know yet the proportion of correct conjugations.
+For example, "aimer" is OK, but "sortir" is horribly wrong!
+.Pp
+I do not have a French localized version yet, which is weird for a French language utility.
+.Sh BUGS
+There are probably lots of peculiarities that would need specific processing,
+the verbs conjugated with the "etre" auxiliary for example.
+.Pp
+Though the software is probably mostly correct, I will consider it as Beta quality till I get
+a better idea of the quality of the source data and offer a way to improve it...
