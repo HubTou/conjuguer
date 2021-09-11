@@ -90,7 +90,7 @@ I do not have a French localized version yet, which is weird for a French langua
 
 ## BUGS
 There are probably lots of peculiarities that would need specific processing,
-the verbs conjugated with the "etre" auxiliary when used with a pronoun for example.
+the verbs conjugated with the "être" auxiliary when used with a pronoun for example.
 
 Though the software is probably mostly correct, I will consider it as Beta quality
 till I get a better idea of the quality of the source data and offer a way to improve it...

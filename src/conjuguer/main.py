@@ -18,7 +18,7 @@ from .verbs import aux, etre_aux, both_aux
 from .blank import blank_verb
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.2.0 (September 11, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.2.3 (September 11, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -52,8 +52,14 @@ def display_help():
     print("usage: conjuguer [--debug] [--help|-?] [--version]", file=sys.stderr)
     print("       [-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]", file=sys.stderr)
     print("       [--] verb [...]", file=sys.stderr)
-    print("  ----------------  -----------------------------------------------------", file=sys.stderr)
-    print("  -c|--columns NUM      Choose number of columns to display between 1, 2 or 4", file=sys.stderr)
+    print(
+        "  ----------------  -----------------------------------------------------",
+        file=sys.stderr
+    )
+    print(
+        "  -c|--columns NUM      Choose number of columns to display between 1, 2 or 4",
+        file=sys.stderr
+    )
     print("  -d|--dictionary PATH  Select a specific dictionary", file=sys.stderr)
     print("  -n|--nocolor          Disable color output", file=sys.stderr)
     print("  --debug               Enable debug mode", file=sys.stderr)
@@ -202,7 +208,9 @@ def process_command_line():
                 parameters["Dictionary path"] = argument
                 parameters["Dictionary type"] = detect_dictionary_type()
                 if parameters["Dictionary type"] not in ("ABU", "DELA"):
-                    logging.critical("The selected dictionary doesn't seem to be of ABU or DELA type")
+                    logging.critical(
+                        "The selected dictionary doesn't seem to be of ABU or DELA type"
+                    )
                     sys.exit(1)
             else:
                 logging.critical("Option -d/--dictionary is expecting a valid pathname")
@@ -247,7 +255,10 @@ def load_all_verbs_from_dictionary():
                     verbs.append(line)
 
     time_stop = time.time()
-    logging.debug("load_all_verbs_from_dictionary() time: %f / lines: %d", time_stop - time_start, len(verbs))
+    logging.debug(
+        "load_all_verbs_from_dictionary() time: %f / lines: %d",
+        time_stop - time_start, len(verbs)
+    )
 
     return verbs
 
@@ -288,7 +299,10 @@ def select_verb_from_verbs(verb, verbs):
                 conjugations.append(line)
 
     time_stop = time.time()
-    logging.debug("select_verb_from_verbs() time: %f / conjugations: %d", time_stop - time_start, len(conjugations))
+    logging.debug(
+        "select_verb_from_verbs() time: %f / conjugations: %d",
+        time_stop - time_start, len(conjugations)
+    )
 
     return conjugations
 
@@ -305,64 +319,85 @@ def fill_verb_from_dela_dictionary_data(verb, conjugations, auxiliary):
     conjugated_verb["Infinitif"]["Présent"] = verb
 
     # We first need to find the "Participe passé" tense for this verb:
-    suffix = ""
+    suffix_s = ""
+    suffix_p = ""
     for line in conjugations:
         for inflection in line.split(":")[1:]:
             if inflection == "Kms":
-                suffix = " " + line.split(",")[0]
-                break
-    if not suffix:
+                suffix_s = " " + line.split(",")[0]
+            if inflection == "Kmp":
+                suffix_p = " " + line.split(",")[0]
+    if not suffix_s:
         logging.warning("Infinitif passé not found for %s", verb)
     else:
-        conjugated_verb["Infinitif"]["Passé"] = auxiliary + suffix
+        conjugated_verb["Infinitif"]["Passé"] = auxiliary + suffix_s
+    if not suffix_p:
+        suffix_p = suffix_s
 
     for line in conjugations:
         conjugation = line.split(",")[0]
         for inflection in line.split(":")[1:]:
             part = list(inflection)
+            suffix = suffix_s
+            if auxiliary == "être" and len(part) == 3 and part[2] == "p":
+                suffix = suffix_p
+
             if part[0] == "P":
                 conjugated_verb["Indicatif"]["Présent"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Passé composé"][part[2]][part[1]] = aux[auxiliary]["Indicatif"]["Présent"][part[2]][part[1]] + suffix
+                    conjugated_verb["Indicatif"]["Passé composé"][part[2]][part[1]] = \
+                        aux[auxiliary]["Indicatif"]["Présent"][part[2]][part[1]] + suffix
             elif part[0] == "I":
                 conjugated_verb["Indicatif"]["Imparfait"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Plus-que-parfait"][part[2]][part[1]] = aux[auxiliary]["Indicatif"]["Imparfait"][part[2]][part[1]] + suffix
+                    conjugated_verb["Indicatif"]["Plus-que-parfait"][part[2]][part[1]] = \
+                        aux[auxiliary]["Indicatif"]["Imparfait"][part[2]][part[1]] + suffix
             elif part[0] == "J":
                 conjugated_verb["Indicatif"]["Passé simple"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Passé antérieur"][part[2]][part[1]] = aux[auxiliary]["Indicatif"]["Passé simple"][part[2]][part[1]] + suffix
+                    conjugated_verb["Indicatif"]["Passé antérieur"][part[2]][part[1]] = \
+                        aux[auxiliary]["Indicatif"]["Passé simple"][part[2]][part[1]] + suffix
             elif part[0] == "F":
                 conjugated_verb["Indicatif"]["Futur simple"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Futur antérieur"][part[2]][part[1]] = aux[auxiliary]["Indicatif"]["Futur simple"][part[2]][part[1]] + suffix
+                    conjugated_verb["Indicatif"]["Futur antérieur"][part[2]][part[1]] = \
+                        aux[auxiliary]["Indicatif"]["Futur simple"][part[2]][part[1]] + suffix
             elif part[0] == "C":
                 conjugated_verb["Conditionnel"]["Présent"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Conditionnel"]["Passé"][part[2]][part[1]] = aux[auxiliary]["Conditionnel"]["Présent"][part[2]][part[1]] + suffix
+                    conjugated_verb["Conditionnel"]["Passé"][part[2]][part[1]] = \
+                        aux[auxiliary]["Conditionnel"]["Présent"][part[2]][part[1]] + suffix
             elif part[0] == "S":
                 conjugated_verb["Subjonctif"]["Présent"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Subjonctif"]["Passé"][part[2]][part[1]] = aux[auxiliary]["Subjonctif"]["Présent"][part[2]][part[1]] + suffix
+                    conjugated_verb["Subjonctif"]["Passé"][part[2]][part[1]] = \
+                        aux[auxiliary]["Subjonctif"]["Présent"][part[2]][part[1]] + suffix
             elif part[0] == "T":
                 conjugated_verb["Subjonctif"]["Imparfait"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Subjonctif"]["Plus-que-parfait"][part[2]][part[1]] = aux[auxiliary]["Subjonctif"]["Imparfait"][part[2]][part[1]] + suffix
+                    conjugated_verb["Subjonctif"]["Plus-que-parfait"][part[2]][part[1]] = \
+                        aux[auxiliary]["Subjonctif"]["Imparfait"][part[2]][part[1]] + suffix
             elif part[0] == "Y":
                 conjugated_verb["Impératif"]["Présent"][part[2]][part[1]] = conjugation
                 if suffix:
-                    conjugated_verb["Impératif"]["Passé"][part[2]][part[1]] = aux[auxiliary]["Impératif"]["Présent"][part[2]][part[1]] + suffix
+                    conjugated_verb["Impératif"]["Passé"][part[2]][part[1]] = \
+                        aux[auxiliary]["Impératif"]["Présent"][part[2]][part[1]] + suffix
             elif part[0] == "G":
                 conjugated_verb["Participe"]["Présent"] = conjugation
                 conjugated_verb["Gérondif"]["Présent"] = conjugation
                 if suffix:
-                    conjugated_verb["Participe"]["Passé"]["a"] = aux[auxiliary]["Participe"]["Présent"] + suffix
-                    conjugated_verb["Gérondif"]["Passé"] = conjugated_verb["Participe"]["Passé"]["a"]
+                    conjugated_verb["Participe"]["Passé"]["a"] = \
+                        aux[auxiliary]["Participe"]["Présent"] + suffix
+                    conjugated_verb["Gérondif"]["Passé"] = \
+                        conjugated_verb["Participe"]["Passé"]["a"]
             elif part[0] == "K":
                 conjugated_verb["Participe"]["Passé"][part[2]][part[1]] = conjugation
 
     time_stop = time.time()
-    logging.debug("fill_verb_from_dela_dictionary_data() time: %f / conjugations: %d", time_stop - time_start, len(conjugations))
+    logging.debug(
+        "fill_verb_from_dela_dictionary_data() time: %f / conjugations: %d",
+        time_stop - time_start, len(conjugations)
+    )
 
     return conjugated_verb
 
@@ -379,16 +414,20 @@ def fill_verb_from_abu_dictionary_data(verb, conjugations, auxiliary):
     conjugated_verb["Infinitif"]["Présent"] = verb
 
     # We first need to find the "Participe passé" tense for this verb:
-    suffix = ""
+    suffix_s = ""
+    suffix_p = ""
     for line in conjugations:
         for inflection in line.split(":")[1:]:
             if inflection == "PPas+Mas+SG":
-                suffix = " " + line.split("	")[0]
-                break
-    if not suffix:
+                suffix_s = " " + line.split("	")[0]
+            if inflection == "PPas+Mas+PL":
+                suffix_p = " " + line.split("	")[0]
+    if not suffix_s:
         logging.warning("Infinitif passé not found for %s", verb)
     else:
-        conjugated_verb["Infinitif"]["Passé"] = auxiliary + suffix
+        conjugated_verb["Infinitif"]["Passé"] = auxiliary + suffix_s
+    if not suffix_p:
+        suffix_p = suffix_s
 
     for line in conjugations:
         conjugation = line.split("	")[0]
@@ -418,50 +457,66 @@ def fill_verb_from_abu_dictionary_data(verb, conjugations, auxiliary):
                     person = "2"
                 elif part[2] == "P3":
                     person = "3"
+            suffix = suffix_s
+            if auxiliary == "être" and number == "p":
+                suffix = suffix_p
 
             if part[0] == "IPre":
                 conjugated_verb["Indicatif"]["Présent"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Passé composé"][number][person] = aux[auxiliary]["Indicatif"]["Présent"][number][person] + suffix
+                    conjugated_verb["Indicatif"]["Passé composé"][number][person] = \
+                        aux[auxiliary]["Indicatif"]["Présent"][number][person] + suffix
             elif part[0] == "IImp":
                 conjugated_verb["Indicatif"]["Imparfait"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Plus-que-parfait"][number][person] = aux[auxiliary]["Indicatif"]["Imparfait"][number][person] + suffix
+                    conjugated_verb["Indicatif"]["Plus-que-parfait"][number][person] = \
+                        aux[auxiliary]["Indicatif"]["Imparfait"][number][person] + suffix
             elif part[0] == "IPSim":
                 conjugated_verb["Indicatif"]["Passé simple"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Passé antérieur"][number][person] = aux[auxiliary]["Indicatif"]["Passé simple"][number][person] + suffix
+                    conjugated_verb["Indicatif"]["Passé antérieur"][number][person] = \
+                        aux[auxiliary]["Indicatif"]["Passé simple"][number][person] + suffix
             elif part[0] == "IFut":
                 conjugated_verb["Indicatif"]["Futur simple"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Indicatif"]["Futur antérieur"][number][person] = aux[auxiliary]["Indicatif"]["Futur simple"][number][person] + suffix
+                    conjugated_verb["Indicatif"]["Futur antérieur"][number][person] = \
+                        aux[auxiliary]["Indicatif"]["Futur simple"][number][person] + suffix
             elif part[0] == "CPre":
                 conjugated_verb["Conditionnel"]["Présent"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Conditionnel"]["Passé"][number][person] = aux[auxiliary]["Conditionnel"]["Présent"][number][person] + suffix
+                    conjugated_verb["Conditionnel"]["Passé"][number][person] = \
+                        aux[auxiliary]["Conditionnel"]["Présent"][number][person] + suffix
             elif part[0] == "SPre":
                 conjugated_verb["Subjonctif"]["Présent"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Subjonctif"]["Passé"][number][person] = aux[auxiliary]["Subjonctif"]["Présent"][number][person] + suffix
+                    conjugated_verb["Subjonctif"]["Passé"][number][person] = \
+                        aux[auxiliary]["Subjonctif"]["Présent"][number][person] + suffix
             elif part[0] == "SImp":
                 conjugated_verb["Subjonctif"]["Imparfait"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Subjonctif"]["Plus-que-parfait"][number][person] = aux[auxiliary]["Subjonctif"]["Imparfait"][number][person] + suffix
+                    conjugated_verb["Subjonctif"]["Plus-que-parfait"][number][person] = \
+                        aux[auxiliary]["Subjonctif"]["Imparfait"][number][person] + suffix
             elif part[0] == "ImPre":
                 conjugated_verb["Impératif"]["Présent"][number][person] = conjugation
                 if suffix:
-                    conjugated_verb["Impératif"]["Passé"][number][person] = aux[auxiliary]["Impératif"]["Présent"][number][person] + suffix
+                    conjugated_verb["Impératif"]["Passé"][number][person] = \
+                        aux[auxiliary]["Impératif"]["Présent"][number][person] + suffix
             elif part[0] == "PPre":
                 conjugated_verb["Participe"]["Présent"] = conjugation
                 conjugated_verb["Gérondif"]["Présent"] = conjugation
                 if suffix:
-                    conjugated_verb["Participe"]["Passé"]["a"] = aux[auxiliary]["Participe"]["Présent"] + suffix
-                    conjugated_verb["Gérondif"]["Passé"] = conjugated_verb["Participe"]["Passé"]["a"]
+                    conjugated_verb["Participe"]["Passé"]["a"] = \
+                        aux[auxiliary]["Participe"]["Présent"] + suffix
+                    conjugated_verb["Gérondif"]["Passé"] = \
+                        conjugated_verb["Participe"]["Passé"]["a"]
             elif part[0] == "PPas":
                 conjugated_verb["Participe"]["Passé"][number][gender] = conjugation
 
     time_stop = time.time()
-    logging.debug("fill_verb_from_abu_dictionary_data() time: %f / conjugations: %d", time_stop - time_start, len(conjugations))
+    logging.debug(
+        "fill_verb_from_abu_dictionary_data() time: %f / conjugations: %d",
+        time_stop - time_start, len(conjugations)
+    )
 
     return conjugated_verb
 
@@ -482,7 +537,12 @@ def print_verb(verb):
     """Return lines describing the conjugated verb"""
     lines = []
     if parameters["Color display"]:
-        lines.append(VERB_COLOR + "Tableau de conjugaison du verbe " + colorama.Style.RESET_ALL + verb)
+        lines.append(
+            VERB_COLOR
+            + "Tableau de conjugaison du verbe "
+            + colorama.Style.RESET_ALL
+            + verb
+        )
     else:
         lines.append("Tableau de conjugaison du verbe " + verb)
     lines.append("")
@@ -528,7 +588,10 @@ def get_pronoun(mode, number, person, conjugated_verb):
     elif mode == "Subjonctif":
         if number == "s":
             if person == "1":
-                if conjugated_verb[0] in ['a', 'e', 'i', 'o', 'u', 'y']:
+                if conjugated_verb[0] in [
+                    'a', 'â', 'à', 'ä', 'e', 'ê', 'é', 'è', 'ë',
+                    'i', 'î', 'ï', 'o', 'ô', 'ö', 'u', 'ù', 'y'
+                ]:
                     pronoun = "que j'   "
                 else:
                     pronoun = "que je   "
@@ -546,7 +609,10 @@ def get_pronoun(mode, number, person, conjugated_verb):
     else:
         if number == "s":
             if person == "1":
-                if conjugated_verb[0] in ['a', 'e', 'i', 'o', 'u', 'y']:
+                if conjugated_verb[0] in [
+                    'a', 'â', 'à', 'ä', 'e', 'ê', 'é', 'è', 'ë',
+                    'i', 'î', 'ï', 'o', 'ô', 'ö', 'u', 'ù', 'y'
+                ]:
                     pronoun = "j'   "
                 else:
                     pronoun = "je   "
@@ -643,7 +709,10 @@ def print_verb_conjugation_odd_columns(conjugation):
     column += print_verb(conjugation["Infinitif"]["Présent"])
 
     column += print_mode("Indicatif")
-    for tense in ["Présent", "Imparfait", "Passé simple", "Futur simple", "Passé composé", "Plus-que-parfait", "Passé antérieur", "Futur antérieur"]:
+    for tense in [
+        "Présent", "Imparfait", "Passé simple", "Futur simple",
+        "Passé composé", "Plus-que-parfait", "Passé antérieur", "Futur antérieur"
+    ]:
         column += get_tense_conjugation("Indicatif", tense, conjugation)
 
     column += print_mode("Conditionnel")
