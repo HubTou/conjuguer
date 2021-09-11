@@ -1,6 +1,6 @@
 NAME=conjuguer
 SECTION=1
-SOURCES=main.py aux.py blank.py
+SOURCES=main.py verbs.py blank.py
 DESTROOTDIR=/usr/local
 
 # Default action is to show this help message:

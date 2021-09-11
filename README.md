@@ -49,16 +49,16 @@ The DICTPATH environment variable is searched for one of the default dictionary 
 Alternatively, the CONJUGUER_DICT environment variable can also be set to the path of the dictionary file you want to use.
 
 ## FILES
-The *dict-fr-DELA* file is the preferred dictionary used, if found in the *DICTPATH*.
+The *dict-fr-AU-DELA* file is the preferred dictionary used, if found in the *DICTPATH*.
 
-Else, the *dict-fr-ABU-mots_communs* file (which contains half of the verbs in the DELA) will be used instead.
+Else, the *dict-fr-DELA* file or the *dict-fr-ABU-mots_communs* file (which contains half of the verbs in the DELA) will be used instead.
 
 ## EXIT STATUS
 The **conjuguer** utility exits 0 on success, and >0 if an error occurs.
 
 ## SEE ALSO
 typo(1),
-spell(1),
+[spell(1)](https://www.freebsd.org/cgi/man.cgi?query=spell),
 ispell(1),
 aspell(1),
 hunspell(1),
@@ -85,13 +85,12 @@ The source code also includes a [snippet of code](https://stackoverflow.com/ques
 The results are only as good (or bad) as what's included in the dictionary used.
 The data in both the ABU and DELA dictionaries obviously contains errors, often on the same verbs...
 I do not know yet the proportion of correct conjugations.
-For example, "aimer" is OK, but "sortir" is horribly wrong!
 
 I do not have a French localized version yet, which is weird for a French language utility.
 
 ## BUGS
 There are probably lots of peculiarities that would need specific processing,
-the verbs conjugated with the "etre" auxiliary for example.
+the verbs conjugated with the "etre" auxiliary when used with a pronoun for example.
 
 Though the software is probably mostly correct, I will consider it as Beta quality
 till I get a better idea of the quality of the source data and offer a way to improve it...
