@@ -1,0 +1,118 @@
+# conjuguer - conjugaison des verbes Français
+# Copyright (C) 2021+ Hubert Tournier
+# This file is distributed under a 3-clause BSD license
+# (see https://opensource.org/licenses/BSD-3-Clause)
+# Hubert Tournier, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: conjuguer 0.3.0\n"
+"Report-Msgid-Bugs-To: hubert.tournier@gmail.com\n"
+"POT-Creation-Date: 2021-09-19 10:30:+0100\n"
+"PO-Revision-Date: 2021-09-19 10:49+0200\n"
+"Last-Translator: Hubert Tournier <hubert.tournier@gmail.com>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: main.py
+#, python-format
+msgid "usage: conjuguer [--debug] [--help|-?] [--version]"
+msgstr "usage: conjuguer [--debug] [--help|-?] [--version]"
+
+msgid "[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"
+msgstr "[-c|--columns NOMBRE] [-d|--dictionary CHEMIN] [-n|--nocolor]"
+
+msgid "[--] verb [...]"
+msgstr "[--] verbe [...]"
+
+msgid "----------------  -----------------------------------------------------"
+msgstr "----------------------  -----------------------------------------------------"
+
+msgid "-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"
+msgstr "-c|--columns NOMBRE     Choix du nombre de colonnes à afficher entre 1, 2 ou 4"
+
+msgid "-d|--dictionary PATH  Select a specific dictionary"
+msgstr "-d|--dictionary CHEMIN  Selectionne le dictionnaire spécifié"
+
+msgid "-n|--nocolor          Disable color output"
+msgstr "-n|--nocolor            Désactive la colorisation"
+
+msgid "--debug               Enable debug mode"
+msgstr "--debug                 Active le mode de débogage"
+
+msgid "--help|-?             Print usage and this help message and exit"
+msgstr "--help|-?               Affiche l'usage de la commande, cette aide et quitte"
+
+msgid "--version             Print version and exit"
+msgstr "--version               Affiche la version de la commande et quitte"
+
+msgid "--                    Options processing terminator"
+msgstr "--                      Marqueur de fin d'options"
+
+msgid "DICTPATH directory"
+msgstr "Répertoire du DICTPATH"
+
+msgid "not found"
+msgstr "non trouvé"
+
+msgid "None of the directories specified in DICTPATH found"
+msgstr "Aucun des répertoires spécifiés dans le DICTPATH n'a été trouvé"
+
+msgid "Dictionary pathname doesn't exist"
+msgstr "Le chemin d'accès au dictionnaire n'existe pas"
+
+msgid "The selected dictionary doesn't seem to be of ABU or DELA type"
+msgstr "Le dictionnaire sélectionné ne semble pas être du type ABU ou DELA"
+
+msgid "Syntax error"
+msgstr "Erreur de syntaxe"
+
+msgid "Option -c/--columns is expecting an integer argument"
+msgstr "L'option -c/--columns nécessite un argument de type entier"
+
+msgid "Option -c/--columns is expecting 1, 2 or 4 columns"
+msgstr "L'option -c/--columns nécessite un nombre de colonnes entre 1, 2 ou 4"
+
+msgid "Option -d/--dictionary is expecting a valid pathname"
+msgstr "L'option -d/--dictionary nécessite un chemin d'accès valide"
+
+msgid "time"
+msgstr "temps"
+
+msgid "lines"
+msgstr "lignes"
+
+msgid "conjugations"
+msgstr "conjugaisons"
+
+msgid "Key"
+msgstr "Clé"
+
+msgid "Line"
+msgstr "Ligne"
+
+msgid "More than one key found for"
+msgstr "Plus d'une clé trouvées pour"
+
+msgid "Only considering the first one"
+msgstr "Seule la première est prise en compte"
+
+msgid "Infinitif passé not found for"
+msgstr "Passé de l'infinitif non trouvé pour"
+
+msgid "Conjugation tables for"
+msgstr "Tableau de conjugaison du verbe"
+
+msgid "Unknown inflected dictionary format"
+msgstr "Format de dictionnaire fléchi inconnu"
+
+msgid "conjuguer expects at least one argument"
+msgstr "conjuguer nécessite au moins un argument"
+
+msgid "is not in the dictionary used"
+msgstr "n'est pas dans le dictionnaire utilisé"
+

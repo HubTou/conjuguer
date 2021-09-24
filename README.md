@@ -86,8 +86,6 @@ The results are only as good (or bad) as what's included in the dictionary used.
 The data in both the ABU and DELA dictionaries obviously contains errors, often on the same verbs...
 I do not know yet the proportion of correct conjugations.
 
-I do not have a French localized version yet, which is weird for a French language utility.
-
 ## BUGS
 There are probably lots of peculiarities that would need specific processing,
 the verbs conjugated with the "être" auxiliary when used with a pronoun for example.

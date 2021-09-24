@@ -447,6 +447,7 @@ aux = {
 
 # Verbs that are conjugated with être auxiliary:
 etre_aux = [
+    "avenir",
     "advenir",
     "aller",
     "arriver",

@@ -47,7 +47,10 @@ love:
 man/${NAME}.${SECTION}.gz: man/${NAME}.${SECTION}
 	@gzip -k9c man/${NAME}.${SECTION} > man/${NAME}.${SECTION}.gz
 
-package: man/${NAME}.${SECTION}.gz
+src/${NAME}/po/fr/${NAME}.mo:
+	@msgfmt --output-file=src/${NAME}/po/fr/${NAME}.mo src/${NAME}/po/fr/${NAME}.po
+
+package: man/${NAME}.${SECTION}.gz src/${NAME}/po/fr/${NAME}.mo
 	python -m build
 
 upload-test:
@@ -57,5 +60,5 @@ upload:
 	python -m twine upload dist/*
 
 distclean:
-	rm -rf build dist man/${NAME}.${SECTION}.gz src/*.egg-info
+	rm -rf build dist man/${NAME}.${SECTION}.gz src/${NAME}/po/fr/${NAME}.mo src/*.egg-info
 

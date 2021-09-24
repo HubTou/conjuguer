@@ -1,0 +1,119 @@
+# conjuguer - conjugaison des verbes Français
+# Copyright (C) 2021+ Hubert Tournier
+# This file is distributed under a 3-clause BSD license
+# (see https://opensource.org/licenses/BSD-3-Clause)
+# Hubert Tournier, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: conjuguer 0.3.0\n"
+"Report-Msgid-Bugs-To: hubert.tournier@gmail.com\n"
+"POT-Creation-Date: 2021-09-19 10:30:+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Hubert Tournier <hubert.tournier@gmail.com>\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: main.py
+#, python-format
+
+msgid "usage: conjuguer [--debug] [--help|-?] [--version]"
+msgstr ""
+
+msgid "[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"
+msgstr ""
+
+msgid "[--] verb [...]"
+msgstr ""
+
+msgid "----------------  -----------------------------------------------------"
+msgstr ""
+
+msgid "-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"
+msgstr ""
+
+msgid "-d|--dictionary PATH  Select a specific dictionary"
+msgstr ""
+
+msgid "-n|--nocolor          Disable color output"
+msgstr ""
+
+msgid "--debug               Enable debug mode"
+msgstr ""
+
+msgid "--help|-?             Print usage and this help message and exit"
+msgstr ""
+
+msgid "--version             Print version and exit"
+msgstr ""
+
+msgid "--                    Options processing terminator"
+msgstr ""
+
+msgid "DICTPATH directory"
+msgstr ""
+
+msgid "not found"
+msgstr ""
+
+msgid "None of the directories specified in DICTPATH found"
+msgstr ""
+
+msgid "Dictionary pathname doesn't exist"
+msgstr ""
+
+msgid "The selected dictionary doesn't seem to be of ABU or DELA type"
+msgstr ""
+
+msgid "Syntax error"
+msgstr ""
+
+msgid "Option -c/--columns is expecting an integer argument"
+msgstr ""
+
+msgid "Option -c/--columns is expecting 1, 2 or 4 columns"
+msgstr ""
+
+msgid "Option -d/--dictionary is expecting a valid pathname"
+msgstr ""
+
+msgid "time"
+msgstr ""
+
+msgid "lines"
+msgstr ""
+
+msgid "conjugations"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Line"
+msgstr ""
+
+msgid "More than one key found for"
+msgstr ""
+
+msgid "Only considering the first one"
+msgstr ""
+
+msgid "Infinitif passé not found for"
+msgstr ""
+
+msgid "Conjugation tables for"
+msgstr ""
+
+msgid "Unknown inflected dictionary format"
+msgstr ""
+
+msgid "conjuguer expects at least one argument"
+msgstr ""
+
+msgid "is not in the dictionary used"
+msgstr ""
+

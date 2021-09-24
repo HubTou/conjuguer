@@ -46,13 +46,18 @@ format: /usr/local/bin/black
 ${NAME}.${SECTION}.gz: ../../man/${NAME}.${SECTION}
 	@gzip -k9c ../../man/${NAME}.${SECTION} > ${NAME}.${SECTION}.gz
 
-install: ${NAME}.${SECTION}.gz
+po/fr/${NAME}.mo:
+	@msgfmt --output-file=po/fr/${NAME}.mo po/fr/${NAME}.po
+
+install: ${NAME}.${SECTION}.gz po/fr/${NAME}.mo
 	install -m 0755 -o root -g wheel main.py ${DESTROOTDIR}/bin/${NAME}
 	install -m 0644 -o root -g wheel ${NAME}.${SECTION}.gz ${DESTROOTDIR}/man/man${SECTION}
+	install -m 0644 -o root -g wheel po/fr/${NAME}.mo ${DESTROOTDIR}/share/locale/fr/LC_MESSAGES
 
 uninstall:
 	rm -f ${DESTROOTDIR}/bin/${NAME}
 	rm -f ${DESTROOTDIR}/man/man${SECTION}/${NAME}.${SECTION}.gz
+	rm -f ${DESTROOTDIR}/share/locale/fr/LC_MESSAGES/${NAME}.mo
 
 whatis:
 	makewhatis
@@ -61,7 +66,7 @@ love:
 	@echo "Not war!"
 
 clean:
-	@rm -f ${NAME}.${SECTION}.gz
+	@rm -f ${NAME}.${SECTION}.gz po/fr/${NAME}.mo
 
 distclean: clean
 

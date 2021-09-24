@@ -6,6 +6,8 @@ Author: Hubert Tournier
 
 import copy
 import getopt
+import gettext
+import locale
 import logging
 import os
 import re
@@ -18,7 +20,7 @@ from .verbs import aux, etre_aux, both_aux
 from .blank import blank_verb
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.2.3 (September 11, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.3.0 (September 24, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -47,25 +49,80 @@ ABU = "dict-fr-ABU-mots_communs"
 
 
 ################################################################################
+def initialize_debugging(program_name):
+    """Debugging set up"""
+    console_log_format = program_name + ": %(levelname)s: %(message)s"
+    logging.basicConfig(format=console_log_format, level=logging.DEBUG)
+    logging.disable(logging.INFO)
+
+
+################################################################################
+def initialize_internationalization(program_name):
+    """Internationalization set up"""
+    lang = locale.getdefaultlocale()[0][:2]
+    locale_dirs = []
+
+    if os.name == "posix":
+        if os.path.isdir("/usr/share/locale"):
+            locale_dirs.append("/usr/share/locale")
+        if os.path.isdir("/usr/local/share/locale"):
+            locale_dirs.append("/usr/local/share/locale")
+        if "HOME" in os.environ.keys():
+            home = os.environ["HOME"]
+            if os.path.isdir(home + os.sep + ".local/share/locale"):
+                locale_dirs.append(home + os.sep + ".local/share/locale")
+    elif os.name == "nt":
+        appdata_path = os.sep + "appdata" + os.sep + "roaming"
+        locale_suffix = os.sep + "python" + os.sep + "share" + os.sep + "locale"
+        if os.environ["APPDATA"]:
+            locale_path = os.environ["APPDATA"] + locale_suffix
+        elif os.environ["HOMEPATH"]:
+            locale_path = os.environ["HOMEPATH"] + appdata_path + locale_suffix
+        elif os.environ["USERPROFILE"]:
+            locale_path = os.environ["USERPROFILE"] + appdata_path + locale_suffix
+        if os.path.isdir(locale_path):
+            locale_dirs.append(locale_path)
+
+        locale_path = sys.base_prefix + os.sep + "share" + os.sep + "locale"
+        if os.path.isdir(locale_path):
+            locale_dirs.append(locale_path)
+
+    for directory in locale_dirs:
+        if gettext.find(program_name, localedir=directory, languages=[lang]) != None:
+            translation = gettext.translation(program_name, localedir=directory, languages=[lang])
+            translation.install()
+            return
+
+    gettext.install(program_name)
+
+
+################################################################################
 def display_help():
     """Displays usage and help"""
-    print("usage: conjuguer [--debug] [--help|-?] [--version]", file=sys.stderr)
-    print("       [-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]", file=sys.stderr)
-    print("       [--] verb [...]", file=sys.stderr)
+    print(_("usage: conjuguer [--debug] [--help|-?] [--version]"), file=sys.stderr)
     print(
-        "  ----------------  -----------------------------------------------------",
+        "       "
+        + _("[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"),
+        file=sys.stderr
+    )
+    print("       " + _("[--] verb [...]"), file=sys.stderr)
+    print(
+        "  " + _("----------------  -----------------------------------------------------"),
         file=sys.stderr
     )
     print(
-        "  -c|--columns NUM      Choose number of columns to display between 1, 2 or 4",
+        "  " + _("-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"),
         file=sys.stderr
     )
-    print("  -d|--dictionary PATH  Select a specific dictionary", file=sys.stderr)
-    print("  -n|--nocolor          Disable color output", file=sys.stderr)
-    print("  --debug               Enable debug mode", file=sys.stderr)
-    print("  --help|-?             Print usage and this help message and exit", file=sys.stderr)
-    print("  --version             Print version and exit", file=sys.stderr)
-    print("  --                    Options processing terminator", file=sys.stderr)
+    print("  " + _("-d|--dictionary PATH  Select a specific dictionary"), file=sys.stderr)
+    print("  " + _("-n|--nocolor          Disable color output"), file=sys.stderr)
+    print("  " + _("--debug               Enable debug mode"), file=sys.stderr)
+    print(
+        "  " + _("--help|-?             Print usage and this help message and exit"),
+        file=sys.stderr
+    )
+    print("  " + _("--version             Print version and exit"), file=sys.stderr)
+    print("  " + _("--                    Options processing terminator"), file=sys.stderr)
     print(file=sys.stderr)
 
 
@@ -99,9 +156,9 @@ def process_environment_variables():
             if os.path.isdir(directory):
                 parameters["DictPath"].append(directory)
             else:
-                logging.warning('DICTPATH directory "%s" not found', directory)
+                logging.warning(_("DICTPATH directory") + ' "%s" ' + _("not found"), directory)
         if len(parameters["DictPath"]) == 0:
-            logging.critical("None of the directories specified in DICTPATH found")
+            logging.critical(_("None of the directories specified in DICTPATH found"))
             sys.exit(1)
     else:
         if os.name == "posix":
@@ -147,13 +204,13 @@ def process_environment_variables():
         if os.path.isfile(os.environ["CONJUGUER_DICT"]):
             parameters["Dictionary path"] = os.environ["CONJUGUER_DICT"]
         else:
-            logging.critical("Dictionary pathname doesn't exist: %s", os.environ["CONJUGUER_DICT"])
+            logging.critical(_("Dictionary pathname doesn't exist") + ": %s", os.environ["CONJUGUER_DICT"])
             sys.exit(1)
 
     if parameters["Dictionary path"]:
         parameters["Dictionary type"] = detect_dictionary_type()
         if parameters["Dictionary type"] not in ("ABU", "DELA"):
-            logging.critical("The selected dictionary doesn't seem to be of ABU or DELA type")
+            logging.critical(_("The selected dictionary doesn't seem to be of ABU or DELA type"))
             sys.exit(1)
 
     logging.debug("process_environment_variables(): parameters:")
@@ -184,7 +241,7 @@ def process_command_line():
             sys.argv[1:], character_options, string_options
         )
     except getopt.GetoptError as error:
-        logging.critical("Syntax error: %s", error)
+        logging.critical(_("Syntax error") + ": %s", error)
         display_help()
         sys.exit(1)
 
@@ -194,10 +251,10 @@ def process_command_line():
             try:
                 parameters["Display columns"] = int(argument)
             except ValueError:
-                logging.critical("Option -c/--columns is expecting an integer argument")
+                logging.critical(_("Option -c/--columns is expecting an integer argument"))
                 sys.exit(1)
             if parameters["Display columns"] not in (1, 2, 4):
-                logging.critical("Option -c/--columns is expecting 1, 2 or 4 columns")
+                logging.critical(_("Option -c/--columns is expecting 1, 2 or 4 columns"))
                 sys.exit(1)
 
         elif option == "--debug":
@@ -209,11 +266,11 @@ def process_command_line():
                 parameters["Dictionary type"] = detect_dictionary_type()
                 if parameters["Dictionary type"] not in ("ABU", "DELA"):
                     logging.critical(
-                        "The selected dictionary doesn't seem to be of ABU or DELA type"
+                        _("The selected dictionary doesn't seem to be of ABU or DELA type")
                     )
                     sys.exit(1)
             else:
-                logging.critical("Option -d/--dictionary is expecting a valid pathname")
+                logging.critical(_("Option -d/--dictionary is expecting a valid pathname"))
                 sys.exit(1)
 
         elif option in ("--help", "-?"):
@@ -256,7 +313,11 @@ def load_all_verbs_from_dictionary():
 
     time_stop = time.time()
     logging.debug(
-        "load_all_verbs_from_dictionary() time: %f / lines: %d",
+        "load_all_verbs_from_dictionary() "
+        + _("time")
+        + ": %f / "
+        + _("lines")
+        + ": %d",
         time_stop - time_start, len(verbs)
     )
 
@@ -276,11 +337,11 @@ def select_verb_from_verbs(verb, verbs):
             if line.startswith(verb + ",.V"):
                 key = line.split(",")[1]
                 key = re.sub(r":.*", "", key)
-                logging.debug("Key: %s", key)
+                logging.debug(_("Key") + ": %s", key)
                 verb_keys.append(key)
         if len(verb_keys) > 1:
-            logging.warning("More than one key found for %s: %s", verb, " ".join(verb_keys))
-            logging.warning("Only considering the first one")
+            logging.warning(_("More than one key found for") + " %s: %s", verb, " ".join(verb_keys))
+            logging.warning(_("Only considering the first one"))
         if len(verb_keys) == 0:
             return conjugations
 
@@ -289,18 +350,22 @@ def select_verb_from_verbs(verb, verbs):
         re_key = re.escape("," + verb + verb_keys[0])
         for line in verbs:
             if re.search(re_key, line):
-                logging.debug("Line: %s", line)
+                logging.debug(_("Line") + ": %s", line)
                 conjugations.append(line)
 
     elif parameters["Dictionary type"] == "ABU":
         for line in verbs:
             if "	" + verb + "	" in line:
-                logging.debug("Line: %s", line)
+                logging.debug(_("Line") + ": %s", line)
                 conjugations.append(line)
 
     time_stop = time.time()
     logging.debug(
-        "select_verb_from_verbs() time: %f / conjugations: %d",
+        "select_verb_from_verbs() "
+        + _("time")
+        + ": %f / "
+        + _("conjugations")
+        + ": %d",
         time_stop - time_start, len(conjugations)
     )
 
@@ -328,7 +393,7 @@ def fill_verb_from_dela_dictionary_data(verb, conjugations, auxiliary):
             if inflection == "Kmp":
                 suffix_p = " " + line.split(",")[0]
     if not suffix_s:
-        logging.warning("Infinitif passé not found for %s", verb)
+        logging.warning(_("Infinitif passé not found for") + " %s", verb)
     else:
         conjugated_verb["Infinitif"]["Passé"] = auxiliary + suffix_s
     if not suffix_p:
@@ -395,7 +460,11 @@ def fill_verb_from_dela_dictionary_data(verb, conjugations, auxiliary):
 
     time_stop = time.time()
     logging.debug(
-        "fill_verb_from_dela_dictionary_data() time: %f / conjugations: %d",
+        "fill_verb_from_dela_dictionary_data() "
+        + _("time")
+        + ": %f / "
+        + _("conjugations")
+        + ": %d",
         time_stop - time_start, len(conjugations)
     )
 
@@ -423,7 +492,7 @@ def fill_verb_from_abu_dictionary_data(verb, conjugations, auxiliary):
             if inflection == "PPas+Mas+PL":
                 suffix_p = " " + line.split("	")[0]
     if not suffix_s:
-        logging.warning("Infinitif passé not found for %s", verb)
+        logging.warning(_("Infinitif passé not found for") + " %s", verb)
     else:
         conjugated_verb["Infinitif"]["Passé"] = auxiliary + suffix_s
     if not suffix_p:
@@ -514,7 +583,11 @@ def fill_verb_from_abu_dictionary_data(verb, conjugations, auxiliary):
 
     time_stop = time.time()
     logging.debug(
-        "fill_verb_from_abu_dictionary_data() time: %f / conjugations: %d",
+        "fill_verb_from_abu_dictionary_data() "
+        + _("time")
+        + ": %f / "
+        + _("conjugations")
+        + ": %d",
         time_stop - time_start, len(conjugations)
     )
 
@@ -539,12 +612,13 @@ def print_verb(verb):
     if parameters["Color display"]:
         lines.append(
             VERB_COLOR
-            + "Tableau de conjugaison du verbe "
+            + _("Conjugation tables for")
+            + " "
             + colorama.Style.RESET_ALL
             + verb
         )
     else:
-        lines.append("Tableau de conjugaison du verbe " + verb)
+        lines.append(_("Conjugation tables for") + " " + verb)
     lines.append("")
 
     return lines
@@ -849,20 +923,18 @@ def main():
     """The program's main entry point"""
     program_name = os.path.basename(sys.argv[0])
 
-    console_log_format = program_name + ": %(levelname)s: %(message)s"
-    logging.basicConfig(format=console_log_format, level=logging.DEBUG)
-    logging.disable(logging.INFO)
-
+    initialize_debugging(program_name)
+    initialize_internationalization(program_name)
     process_environment_variables()
     arguments = process_command_line()
 
     if parameters["Dictionary type"] not in ("ABU", "DELA"):
-        logging.debug("Unknown inflected dictionary format")
+        logging.debug(_("Unknown inflected dictionary format"))
         sys.exit(1)
     verbs = load_all_verbs_from_dictionary()
 
     if not arguments:
-        logging.critical("conjuguer expects at least one argument")
+        logging.critical(_("conjuguer expects at least one argument"))
         display_help()
         sys.exit(1)
 
@@ -882,7 +954,7 @@ def main():
                 verb = conjuguer(argument, conjugations, "avoir")
                 print_verb_conjugation(verb)
         else:
-            logging.error("%s is not in the dictionary used", argument)
+            logging.error("%s " + _("is not in the dictionary used"), argument)
             exit_status = 1
 
     sys.exit(exit_status)
