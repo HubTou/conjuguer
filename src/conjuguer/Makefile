@@ -46,7 +46,15 @@ format: /usr/local/bin/black
 ${NAME}.${SECTION}.gz: ../../man/${NAME}.${SECTION}
 	@gzip -k9c ../../man/${NAME}.${SECTION} > ${NAME}.${SECTION}.gz
 
-po/fr/${NAME}.mo:
+po/${NAME}.pot:
+	@mkdir po
+	@xgettext --language=Python -o po/${NAME}.pot *.py
+
+po/fr/${NAME}.po: po/${NAME}.pot
+	@mkdir -p po/fr
+	@msginit --locale=fr --input=po/${NAME}.pot --output=po/fr/${NAME}.po
+
+po/fr/${NAME}.mo: po/fr/${NAME}.po
 	@msgfmt --output-file=po/fr/${NAME}.mo po/fr/${NAME}.po
 
 install: ${NAME}.${SECTION}.gz po/fr/${NAME}.mo

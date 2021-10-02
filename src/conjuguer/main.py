@@ -16,11 +16,11 @@ import time
 
 import colorama
 
-from .verbs import aux, etre_aux, both_aux
+from .verbs import aux, etre_aux, both_aux, patterns
 from .blank import blank_verb
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.3.0 (September 24, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.4.0 (October 2, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -57,20 +57,21 @@ def initialize_debugging(program_name):
 
 
 ################################################################################
-def initialize_internationalization(program_name):
+def initialize_internationalization(program_name, lang=locale.getdefaultlocale()[0][:2]):
     """Internationalization set up"""
-    lang = locale.getdefaultlocale()[0][:2]
     locale_dirs = []
 
     if os.name == "posix":
-        if os.path.isdir("/usr/share/locale"):
-            locale_dirs.append("/usr/share/locale")
-        if os.path.isdir("/usr/local/share/locale"):
-            locale_dirs.append("/usr/local/share/locale")
+        # local packages override system packages:
         if "HOME" in os.environ.keys():
             home = os.environ["HOME"]
             if os.path.isdir(home + os.sep + ".local/share/locale"):
                 locale_dirs.append(home + os.sep + ".local/share/locale")
+
+        if os.path.isdir("/usr/share/locale"):
+            locale_dirs.append("/usr/share/locale")
+        if os.path.isdir("/usr/local/share/locale"):
+            locale_dirs.append("/usr/local/share/locale")
     elif os.name == "nt":
         appdata_path = os.sep + "appdata" + os.sep + "roaming"
         locale_suffix = os.sep + "python" + os.sep + "share" + os.sep + "locale"
@@ -99,7 +100,7 @@ def initialize_internationalization(program_name):
 ################################################################################
 def display_help():
     """Displays usage and help"""
-    print(_("usage: conjuguer [--debug] [--help|-?] [--version]"), file=sys.stderr)
+    print(_("usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"), file=sys.stderr)
     print(
         "       "
         + _("[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"),
@@ -119,6 +120,10 @@ def display_help():
     print("  " + _("--debug               Enable debug mode"), file=sys.stderr)
     print(
         "  " + _("--help|-?             Print usage and this help message and exit"),
+        file=sys.stderr
+    )
+    print(
+        "  " + _("--locale LANG         Override environment to select another language"),
         file=sys.stderr
     )
     print("  " + _("--version             Print version and exit"), file=sys.stderr)
@@ -183,7 +188,7 @@ def process_environment_variables():
             if os.path.isdir(pnu_dictpath):
                 parameters["DictPath"].append(pnu_dictpath)
 
-            pnu_dictpath2=sys.executable.replace("python.exe", "share" + os.sep + "dict")
+            pnu_dictpath2 = sys.base_prefix + os.sep + "share" + os.sep + "dict"
             if os.path.isdir(pnu_dictpath2):
                 parameters["DictPath"].append(pnu_dictpath2)
 
@@ -218,7 +223,7 @@ def process_environment_variables():
 
 
 ################################################################################
-def process_command_line():
+def process_command_line(program_name):
     """Process command line options"""
     # pylint: disable=C0103
     global parameters
@@ -232,6 +237,7 @@ def process_command_line():
         "debug",
         "dictionary=",
         "help",
+        "locale=",
         "nocolor",
         "version",
     ]
@@ -276,6 +282,9 @@ def process_command_line():
         elif option in ("--help", "-?"):
             display_help()
             sys.exit(0)
+
+        elif option == "--locale":
+            initialize_internationalization(program_name, argument)
 
         elif option in ("-n", "--nocolor"):
             parameters["Color display"] = False
@@ -606,8 +615,36 @@ def conjuguer(verb, conjugations, auxiliary):
 
 
 ################################################################################
+def analyze_verb(verb):
+    """Return a verb pattern, group and conjugation model"""
+    group = None
+    group_text = ""
+    model = ""
+
+    for key in patterns.keys():
+        if verb.endswith(key):
+            group = patterns[key][0]
+            model = patterns[key][1]
+            break
+
+    if group == 0:
+        group_text = _("auxiliary")
+    elif group == 1:
+        group_text = _("1st group")
+    elif group == 2:
+        group_text = _("2nd group")
+    elif group == 3:
+        group_text = _("3rd group")
+    else:
+        group_text = _("unknown group")
+
+    return key, group_text, model
+
+
+################################################################################
 def print_verb(verb):
     """Return lines describing the conjugated verb"""
+    pattern, group, model = analyze_verb(verb)
     lines = []
     if parameters["Color display"]:
         lines.append(
@@ -619,6 +656,12 @@ def print_verb(verb):
         )
     else:
         lines.append(_("Conjugation tables for") + " " + verb)
+
+    if verb == model:
+        lines.append(group + ", " + _("model for verbs like") + " *" + pattern)
+    else:
+        lines.append(group + ", " + _("conjugated like") + " " + model)
+
     lines.append("")
 
     return lines
@@ -926,17 +969,18 @@ def main():
     initialize_debugging(program_name)
     initialize_internationalization(program_name)
     process_environment_variables()
-    arguments = process_command_line()
-
-    if parameters["Dictionary type"] not in ("ABU", "DELA"):
-        logging.debug(_("Unknown inflected dictionary format"))
-        sys.exit(1)
-    verbs = load_all_verbs_from_dictionary()
+    arguments = process_command_line(program_name)
 
     if not arguments:
         logging.critical(_("conjuguer expects at least one argument"))
         display_help()
         sys.exit(1)
+
+    if parameters["Dictionary type"] not in ("ABU", "DELA"):
+        logging.debug(_("Unknown inflected dictionary format"))
+        sys.exit(1)
+
+    verbs = load_all_verbs_from_dictionary()
 
     exit_status = 0
     for argument in arguments:
@@ -955,6 +999,16 @@ def main():
                 print_verb_conjugation(verb)
         else:
             logging.error("%s " + _("is not in the dictionary used"), argument)
+            pattern, group, model = analyze_verb(argument)
+            print(
+                _("If it really exists, it would be")
+                + " "
+                + group
+                + ", "
+                + _("conjugated like")
+                + " "
+                + model
+            )
             exit_status = 1
 
     sys.exit(exit_status)

@@ -7,10 +7,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: conjuguer 0.3.0\n"
+"Project-Id-Version: conjuguer 0.4.0\n"
 "Report-Msgid-Bugs-To: hubert.tournier@gmail.com\n"
-"POT-Creation-Date: 2021-09-19 10:30:+0100\n"
-"PO-Revision-Date: \n"
+"POT-Creation-Date: 2021-09-19 10:30:+0200\n"
+"PO-Revision-Date: 2021-10-02 15:26:+0200\n"
 "Last-Translator: Hubert Tournier <hubert.tournier@gmail.com>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: main.py
 #, python-format
 
-msgid "usage: conjuguer [--debug] [--help|-?] [--version]"
+msgid "usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"
 msgstr ""
 
 msgid "[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"
@@ -46,6 +46,9 @@ msgid "--debug               Enable debug mode"
 msgstr ""
 
 msgid "--help|-?             Print usage and this help message and exit"
+msgstr ""
+
+msgid "--locale LANG         Override environment to select another language"
 msgstr ""
 
 msgid "--version             Print version and exit"
@@ -105,6 +108,27 @@ msgstr ""
 msgid "Infinitif passé not found for"
 msgstr ""
 
+msgid "auxiliary"
+msgstr ""
+
+msgid "1st group"
+msgstr ""
+
+msgid "2nd group"
+msgstr ""
+
+msgid "3rd group"
+msgstr ""
+
+msgid "unknown group"
+msgstr ""
+
+msgid "model for verbs like"
+msgstr ""
+
+msgid "conjugated like"
+msgstr ""
+
 msgid "Conjugation tables for"
 msgstr ""
 
@@ -115,5 +139,8 @@ msgid "conjuguer expects at least one argument"
 msgstr ""
 
 msgid "is not in the dictionary used"
+msgstr ""
+
+msgid "If it really exists, it would be"
 msgstr ""
 

@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: conjuguer 0.3.0\n"
+"Project-Id-Version: conjuguer 0.4.0\n"
 "Report-Msgid-Bugs-To: hubert.tournier@gmail.com\n"
-"POT-Creation-Date: 2021-09-19 10:30:+0100\n"
-"PO-Revision-Date: 2021-09-19 10:49+0200\n"
+"POT-Creation-Date: 2021-09-19 10:30:+0200\n"
+"PO-Revision-Date: 2021-10-02 15:27+0200\n"
 "Last-Translator: Hubert Tournier <hubert.tournier@gmail.com>\n"
 "Language-Team: French <traduc@traduc.org>\n"
 "Language: fr\n"
@@ -20,8 +20,8 @@ msgstr ""
 
 #: main.py
 #, python-format
-msgid "usage: conjuguer [--debug] [--help|-?] [--version]"
-msgstr "usage: conjuguer [--debug] [--help|-?] [--version]"
+msgid "usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"
+msgstr "usage: conjuguer [--debug] [--help|-?] [--locale LANGUE] [--version]"
 
 msgid "[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"
 msgstr "[-c|--columns NOMBRE] [-d|--dictionary CHEMIN] [-n|--nocolor]"
@@ -46,6 +46,9 @@ msgstr "--debug                 Active le mode de débogage"
 
 msgid "--help|-?             Print usage and this help message and exit"
 msgstr "--help|-?               Affiche l'usage de la commande, cette aide et quitte"
+
+msgid "--locale LANG         Override environment to select another language"
+msgstr "--locale LANGUE         Force la langue utilisée"
 
 msgid "--version             Print version and exit"
 msgstr "--version               Affiche la version de la commande et quitte"
@@ -96,7 +99,7 @@ msgid "Line"
 msgstr "Ligne"
 
 msgid "More than one key found for"
-msgstr "Plus d'une clé trouvées pour"
+msgstr "Plus d'une clé trouvée pour"
 
 msgid "Only considering the first one"
 msgstr "Seule la première est prise en compte"
@@ -104,8 +107,29 @@ msgstr "Seule la première est prise en compte"
 msgid "Infinitif passé not found for"
 msgstr "Passé de l'infinitif non trouvé pour"
 
+msgid "auxiliary"
+msgstr "auxiliaire"
+
+msgid "1st group"
+msgstr "1er groupe"
+
+msgid "2nd group"
+msgstr "2ème groupe"
+
+msgid "3rd group"
+msgstr "3ème groupe"
+
+msgid "unknown group"
+msgstr "groupe inconnu"
+
+msgid "model for verbs like"
+msgstr "modèle des verbes en"
+
+msgid "conjugated like"
+msgstr "conjugué comme"
+
 msgid "Conjugation tables for"
-msgstr "Tableau de conjugaison du verbe"
+msgstr "Tableau de conjugaisons du verbe"
 
 msgid "Unknown inflected dictionary format"
 msgstr "Format de dictionnaire fléchi inconnu"
@@ -115,4 +139,7 @@ msgstr "conjuguer nécessite au moins un argument"
 
 msgid "is not in the dictionary used"
 msgstr "n'est pas dans le dictionnaire utilisé"
+
+msgid "If it really exists, it would be"
+msgstr "S'il existe réellement, il serait du"
 

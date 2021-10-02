@@ -38,6 +38,7 @@ Options | Use
 -n\|--nocolor|Disable color output
 --debug|Enable debug mode
 --help\|-?|Print usage and a short help message and exit
+--locale LANG|Override environment to select another language
 --version|Print version and exit
 --|Options processing terminator
 
@@ -92,3 +93,6 @@ the verbs conjugated with the "être" auxiliary when used with a pronoun for exa
 
 Though the software is probably mostly correct, I will consider it as Beta quality
 till I get a better idea of the quality of the source data and offer a way to improve it...
+
+The *--lang* command line option does not always work correctly when selecting en(glish).
+

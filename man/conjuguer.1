@@ -1,4 +1,4 @@
-.Dd September 24, 2021
+.Dd October 2, 2021
 .Dt CONJUGUER 1
 .Os
 .Sh NAME
@@ -50,6 +50,9 @@ Enable debug mode
 .Pp
 .Op Fl -help|-?
 Print usage and this help message and exit
+.Pp
+.Op Fl -locale Ar LANG
+Override environment to select another language
 .Pp
 .Op Fl -version
 Print version and exit
@@ -115,3 +118,7 @@ the verbs conjugated with the "etre" auxiliary when used with a pronoun for exam
 .Pp
 Though the software is probably mostly correct, I will consider it as Beta quality till I get
 a better idea of the quality of the source data and offer a way to improve it...
+.Pp
+The
+.Fl -lang
+command line option does not always work correctly when selecting en(glish).
