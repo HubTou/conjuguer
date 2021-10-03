@@ -11,8 +11,11 @@ conjuguer — conjugaison des verbes Francais
 \[-c|--columns NUM\]
 \[-d|--dictionary PATH\]
 \[-n|--nocolor\]
+\[-D|--DELA\]
+\[-A|--ABU\]
 \[--debug\]
 \[--help|-?\]
+\[--locale LANG\]
 \[--version\]
 \[--\]
 verb [...]
@@ -36,6 +39,8 @@ Options | Use
 -c\|--columns NUM|Choose number of columns to display between 1, 2 or 4
 -d\|--dictionary PATH|Select a specific dictionary
 -n\|--nocolor|Disable color output
+-D\|--DELA|Enable DELA format output
+-A\|--ABU|Enable ABU format output
 --debug|Enable debug mode
 --help\|-?|Print usage and a short help message and exit
 --locale LANG|Override environment to select another language
@@ -93,6 +98,4 @@ the verbs conjugated with the "être" auxiliary when used with a pronoun for exa
 
 Though the software is probably mostly correct, I will consider it as Beta quality
 till I get a better idea of the quality of the source data and offer a way to improve it...
-
-The *--lang* command line option does not always work correctly when selecting en(glish).
 

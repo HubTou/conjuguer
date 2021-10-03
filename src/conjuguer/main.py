@@ -4,6 +4,7 @@ License: 3-clause BSD (see https://opensource.org/licenses/BSD-3-Clause)
 Author: Hubert Tournier
 """
 
+import collections
 import copy
 import getopt
 import gettext
@@ -20,7 +21,7 @@ from .verbs import aux, etre_aux, both_aux, patterns
 from .blank import blank_verb
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.4.0 (October 2, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.5.0 (October 3, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -28,6 +29,8 @@ parameters = {
     "Dictionary type": "",
     "Color display": True,
     "Display columns": 4,
+    "DELA output": False,
+    "ABU output": False,
     "DictPath": [],
 }
 
@@ -103,12 +106,13 @@ def display_help():
     print(_("usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"), file=sys.stderr)
     print(
         "       "
-        + _("[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"),
+        + _("[-c|--columns NUMBER] [-n|--nocolor] [-D|--DELA] [-A|--ABU]"),
         file=sys.stderr
     )
+    print("       " + _("[-d|--dictionary PATH]"), file=sys.stderr)
     print("       " + _("[--] verb [...]"), file=sys.stderr)
     print(
-        "  " + _("----------------  -----------------------------------------------------"),
+        "  " + _("--------------------  -----------------------------------------------------"),
         file=sys.stderr
     )
     print(
@@ -117,6 +121,8 @@ def display_help():
     )
     print("  " + _("-d|--dictionary PATH  Select a specific dictionary"), file=sys.stderr)
     print("  " + _("-n|--nocolor          Disable color output"), file=sys.stderr)
+    print("  " + _("-D|--DELA             Enable DELA format output"), file=sys.stderr)
+    print("  " + _("-A|--ABU              Enable ABU format output"), file=sys.stderr)
     print("  " + _("--debug               Enable debug mode"), file=sys.stderr)
     print(
         "  " + _("--help|-?             Print usage and this help message and exit"),
@@ -231,10 +237,12 @@ def process_command_line(program_name):
 
     # option letters followed by : expect an argument
     # same for option strings followed by =
-    character_options = "c:d:n?"
+    character_options = "Ac:d:Dn?"
     string_options = [
+        "ABU",
         "columns=",
         "debug",
+        "DELA",
         "dictionary=",
         "help",
         "locale=",
@@ -253,7 +261,11 @@ def process_command_line(program_name):
 
     for option, argument in options:
 
-        if option in ("-c", "--columns"):
+        if option in ("-A", "--ABU"):
+            parameters["ABU output"] = True
+            parameters["DELA output"] = False
+
+        elif option in ("-c", "--columns"):
             try:
                 parameters["Display columns"] = int(argument)
             except ValueError:
@@ -265,6 +277,10 @@ def process_command_line(program_name):
 
         elif option == "--debug":
             logging.disable(logging.NOTSET)
+
+        elif option in ("-D", "--DELA"):
+            parameters["DELA output"] = True
+            parameters["ABU output"] = False
 
         elif option in ("-d", "--dictionary"):
             if os.path.isfile(argument):
@@ -953,9 +969,84 @@ def print_verb_conjugation_even_columns(conjugation):
 
 
 ################################################################################
+def add_inflection(inflected_list, key, value):
+    """ """
+    if key:
+        if key in inflected_list.keys():
+            inflected_list[key] += value
+        else:
+            inflected_list[key] = value
+
+    return inflected_list
+
+
+################################################################################
+def print_ABU_inflections(verb):
+    """Print a verb conjugations in ABU format"""
+    inflected_verb = {}
+    inflected_verb = add_inflection(inflected_verb, verb["Infinitif"]["Présent"], ":Inf")
+    for plural in [["s", "+SG"], ["p", "+PL"]]:
+        for person in [["1", "+P1"], ["2", "+P2"], ["3", "+P3"]]:
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Présent"][plural[0]][person[0]], ":IPre" + plural[1] + person[1])
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Imparfait"][plural[0]][person[0]], ":IImp" + plural[1] + person[1])
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Passé simple"][plural[0]][person[0]], ":IPSim" + plural[1] + person[1])
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Futur simple"][plural[0]][person[0]], ":IFut" + plural[1] + person[1])
+            inflected_verb = add_inflection(inflected_verb, verb["Conditionnel"]["Présent"][plural[0]][person[0]], ":CPre" + plural[1] + person[1])
+            inflected_verb = add_inflection(inflected_verb, verb["Subjonctif"]["Présent"][plural[0]][person[0]], ":SPre" + plural[1] + person[1])
+            inflected_verb = add_inflection(inflected_verb, verb["Subjonctif"]["Imparfait"][plural[0]][person[0]], ":SImp" + plural[1] + person[1])
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Présent"], ":PPre")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["s"]["m"], ":PPas+Mas+SG")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["s"]["f"], ":PPas+Fem+SG")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["p"]["m"], ":PPas+Mas+PL")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["p"]["f"], ":PPas+Fem+PL")
+    inflected_verb = add_inflection(inflected_verb, verb["Impératif"]["Présent"]["s"]["2"], ":ImPre+SG+P2")
+    inflected_verb = add_inflection(inflected_verb, verb["Impératif"]["Présent"]["p"]["1"], ":ImPre+PL+P1")
+    inflected_verb = add_inflection(inflected_verb, verb["Impératif"]["Présent"]["p"]["2"], ":ImPre+PL+P2")
+    inflected_verb = collections.OrderedDict(sorted(inflected_verb.items()))
+
+    for key in inflected_verb.keys():
+        print("{}	{}	Ver{}".format(key, verb["Infinitif"]["Présent"], inflected_verb[key]))
+
+
+################################################################################
+def print_DELA_inflections(verb):
+    """Print a verb conjugations in DELA format"""
+    inflected_verb = {}
+    inflected_verb = add_inflection(inflected_verb, verb["Infinitif"]["Présent"], ":W")
+    for plural in ["s", "p"]:
+        for person in ["1", "2", "3"]:
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Présent"][plural][person], ":P" + person + plural)
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Imparfait"][plural][person], ":I" + person + plural)
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Passé simple"][plural][person], ":J" + person + plural)
+            inflected_verb = add_inflection(inflected_verb, verb["Indicatif"]["Futur simple"][plural][person], ":F" + person + plural)
+            inflected_verb = add_inflection(inflected_verb, verb["Conditionnel"]["Présent"][plural][person], ":C" + person + plural)
+            inflected_verb = add_inflection(inflected_verb, verb["Subjonctif"]["Présent"][plural][person], ":S" + person + plural)
+            inflected_verb = add_inflection(inflected_verb, verb["Subjonctif"]["Imparfait"][plural][person], ":T" + person + plural)
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Présent"], ":G")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["s"]["m"], ":Kms")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["s"]["f"], ":Kfs")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["p"]["m"], ":Kmp")
+    inflected_verb = add_inflection(inflected_verb, verb["Participe"]["Passé"]["p"]["f"], ":Kfp")
+    inflected_verb = add_inflection(inflected_verb, verb["Impératif"]["Présent"]["s"]["2"], ":Y2s")
+    inflected_verb = add_inflection(inflected_verb, verb["Impératif"]["Présent"]["p"]["1"], ":Y1p")
+    inflected_verb = add_inflection(inflected_verb, verb["Impératif"]["Présent"]["p"]["2"], ":Y2p")
+    inflected_verb = collections.OrderedDict(sorted(inflected_verb.items()))
+
+    for key in inflected_verb.keys():
+        if key == verb["Infinitif"]["Présent"]:
+            print("{},.V{}".format(key, inflected_verb[key]))
+        else:
+            print("{},{}.V{}".format(key, verb["Infinitif"]["Présent"], inflected_verb[key]))
+
+
+################################################################################
 def print_verb_conjugation(verb):
-    """Print a 1, 2 or 4 columns verb conjugation"""
-    if parameters["Display columns"] == 1:
+    """Print a verb conjugations in different output formats"""
+    if parameters["ABU output"]:
+        print_ABU_inflections(verb)
+    elif parameters["DELA output"]:
+        print_DELA_inflections(verb)
+    elif parameters["Display columns"] == 1:
         print_verb_conjugation_odd_columns(verb)
     else:
         print_verb_conjugation_even_columns(verb)
@@ -986,17 +1077,23 @@ def main():
     for argument in arguments:
         conjugations = select_verb_from_verbs(argument, verbs)
         if conjugations:
+            verb = None
+            verb2 = None
+
             if argument in etre_aux:
                 verb = conjuguer(argument, conjugations, "être")
-                print_verb_conjugation(verb)
             elif argument in both_aux:
-                verb1 = conjuguer(argument, conjugations, "être")
-                print_verb_conjugation(verb1)
+                verb = conjuguer(argument, conjugations, "être")
                 verb2 = conjuguer(argument, conjugations, "avoir")
-                print_verb_conjugation(verb2)
             else:
                 verb = conjuguer(argument, conjugations, "avoir")
-                print_verb_conjugation(verb)
+
+            print_verb_conjugation(verb)
+            if argument in both_aux \
+            and not parameters["ABU output"] \
+            and not parameters["DELA output"]:
+                print_verb_conjugation(verb2)
+
         else:
             logging.error("%s " + _("is not in the dictionary used"), argument)
             pattern, group, model = analyze_verb(argument)

@@ -50,6 +50,13 @@ po/${NAME}.pot:
 	@mkdir po
 	@xgettext --language=Python -o po/${NAME}.pot *.py
 
+po/en/${NAME}.po: po/${NAME}.pot
+	@mkdir -p po/en
+	@msginit --locale=en --input=po/${NAME}.pot --output=po/en/${NAME}.po
+
+po/en/${NAME}.mo: po/en/${NAME}.po
+	@msgfmt --output-file=po/en/${NAME}.mo po/en/${NAME}.po
+
 po/fr/${NAME}.po: po/${NAME}.pot
 	@mkdir -p po/fr
 	@msginit --locale=fr --input=po/${NAME}.pot --output=po/fr/${NAME}.po
@@ -57,14 +64,16 @@ po/fr/${NAME}.po: po/${NAME}.pot
 po/fr/${NAME}.mo: po/fr/${NAME}.po
 	@msgfmt --output-file=po/fr/${NAME}.mo po/fr/${NAME}.po
 
-install: ${NAME}.${SECTION}.gz po/fr/${NAME}.mo
+install: ${NAME}.${SECTION}.gz po/en/${NAME}.mo po/fr/${NAME}.mo
 	install -m 0755 -o root -g wheel main.py ${DESTROOTDIR}/bin/${NAME}
 	install -m 0644 -o root -g wheel ${NAME}.${SECTION}.gz ${DESTROOTDIR}/man/man${SECTION}
+	install -m 0644 -o root -g wheel po/en/${NAME}.mo ${DESTROOTDIR}/share/locale/en/LC_MESSAGES
 	install -m 0644 -o root -g wheel po/fr/${NAME}.mo ${DESTROOTDIR}/share/locale/fr/LC_MESSAGES
 
 uninstall:
 	rm -f ${DESTROOTDIR}/bin/${NAME}
 	rm -f ${DESTROOTDIR}/man/man${SECTION}/${NAME}.${SECTION}.gz
+	rm -f ${DESTROOTDIR}/share/locale/en/LC_MESSAGES/${NAME}.mo
 	rm -f ${DESTROOTDIR}/share/locale/fr/LC_MESSAGES/${NAME}.mo
 
 whatis:
@@ -74,7 +83,7 @@ love:
 	@echo "Not war!"
 
 clean:
-	@rm -f ${NAME}.${SECTION}.gz po/fr/${NAME}.mo
+	@rm -f ${NAME}.${SECTION}.gz po/en/${NAME}.mo po/fr/${NAME}.mo
 
 distclean: clean
 

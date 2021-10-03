@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: conjuguer 0.4.0\n"
+"Project-Id-Version: conjuguer 0.5.0\n"
 "Report-Msgid-Bugs-To: hubert.tournier@gmail.com\n"
 "POT-Creation-Date: 2021-09-19 10:30:+0200\n"
-"PO-Revision-Date: 2021-10-02 15:27+0200\n"
+"PO-Revision-Date: 2021-10-03 23:28+0200\n"
 "Last-Translator: Hubert Tournier <hubert.tournier@gmail.com>\n"
 "Language-Team: French <traduc@traduc.org>\n"
 "Language: fr\n"
@@ -23,13 +23,16 @@ msgstr ""
 msgid "usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"
 msgstr "usage: conjuguer [--debug] [--help|-?] [--locale LANGUE] [--version]"
 
-msgid "[-c|--columns NUMBER] [-d|--dictionary PATH] [-n|--nocolor]"
-msgstr "[-c|--columns NOMBRE] [-d|--dictionary CHEMIN] [-n|--nocolor]"
+msgid "[-c|--columns NUMBER] [-n|--nocolor] [-D|--DELA] [-A|--ABU]"
+msgstr "[-c|--columns NOMBRE] [-n|--nocolor] [-D|--DELA] [-A|--ABU]"
+
+msgid "[-d|--dictionary PATH]"
+msgstr "[-d|--dictionary CHEMIN]"
 
 msgid "[--] verb [...]"
 msgstr "[--] verbe [...]"
 
-msgid "----------------  -----------------------------------------------------"
+msgid "--------------------  -----------------------------------------------------"
 msgstr "----------------------  -----------------------------------------------------"
 
 msgid "-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"
@@ -40,6 +43,12 @@ msgstr "-d|--dictionary CHEMIN  Selectionne le dictionnaire spécifié"
 
 msgid "-n|--nocolor          Disable color output"
 msgstr "-n|--nocolor            Désactive la colorisation"
+
+msgid "-D|--DELA             Enable DELA format output"
+msgstr "-D|--DELA               Active l'affichage au format DELA"
+
+msgid "-A|--ABU              Enable ABU format output"
+msgstr "-A|--ABU                Active l'affichage au format ABU"
 
 msgid "--debug               Enable debug mode"
 msgstr "--debug                 Active le mode de débogage"

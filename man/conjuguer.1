@@ -9,8 +9,11 @@
 .Op Fl c|--columns Ar NUM
 .Op Fl d|--dictionary Ar PATH
 .Op Fl n|--nocolor
+.Op Fl D|--DELA
+.Op Fl A|--ABU
 .Op Fl -debug
 .Op Fl -help|-?
+.Op Fl -locale Ar LANG
 .Op Fl -version
 .Op Fl -
 .Ar verb
@@ -44,6 +47,12 @@ Select a specific dictionary
 .Pp
 .Op Fl n|--nocolor
 Disable color output
+.Pp
+.Op Fl D|--DELA
+Enable DELA format output
+.Pp
+.Op Fl A|--ABU
+Enable ABU format output
 .Pp
 .Op Fl -debug
 Enable debug mode
@@ -118,7 +127,3 @@ the verbs conjugated with the "etre" auxiliary when used with a pronoun for exam
 .Pp
 Though the software is probably mostly correct, I will consider it as Beta quality till I get
 a better idea of the quality of the source data and offer a way to improve it...
-.Pp
-The
-.Fl -lang
-command line option does not always work correctly when selecting en(glish).

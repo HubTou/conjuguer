@@ -4,152 +4,153 @@
 # (see https://opensource.org/licenses/BSD-3-Clause)
 # Hubert Tournier, 2021.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: conjuguer 0.5.0\n"
 "Report-Msgid-Bugs-To: hubert.tournier@gmail.com\n"
 "POT-Creation-Date: 2021-09-19 10:30:+0200\n"
-"PO-Revision-Date: 2021-10-03 23:26:+0200\n"
+"PO-Revision-Date: 2021-10-03 23:27+0200\n"
 "Last-Translator: Hubert Tournier <hubert.tournier@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: English\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: main.py
 #, python-format
-
 msgid "usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"
-msgstr ""
+msgstr "usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"
 
 msgid "[-c|--columns NUMBER] [-n|--nocolor] [-D|--DELA] [-A|--ABU]"
-msgstr ""
+msgstr "[-c|--columns NUMBER] [-n|--nocolor] [-D|--DELA] [-A|--ABU]"
 
 msgid "[-d|--dictionary PATH]"
-msgstr ""
+msgstr "[-d|--dictionary PATH]"
 
 msgid "[--] verb [...]"
-msgstr ""
+msgstr "[--] verb [...]"
 
 msgid "--------------------  -----------------------------------------------------"
-msgstr ""
+msgstr "--------------------  -----------------------------------------------------"
 
-msgid "-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"
+msgid ""
+"-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"
 msgstr ""
+"-c|--columns NUM      Choose number of columns to display between 1, 2 or 4"
 
 msgid "-d|--dictionary PATH  Select a specific dictionary"
-msgstr ""
+msgstr "-d|--dictionary PATH  Select a specific dictionary"
 
 msgid "-n|--nocolor          Disable color output"
-msgstr ""
+msgstr "-n|--nocolor          Disable color output"
 
 msgid "-D|--DELA             Enable DELA format output"
-msgstr ""
+msgstr "-D|--DELA             Enable DELA format output"
 
 msgid "-A|--ABU              Enable ABU format output"
-msgstr ""
+msgstr "-A|--ABU              Enable ABU format output"
 
 msgid "--debug               Enable debug mode"
-msgstr ""
+msgstr "--debug               Enable debug mode"
 
 msgid "--help|-?             Print usage and this help message and exit"
-msgstr ""
+msgstr "--help|-?             Print usage and this help message and exit"
 
 msgid "--locale LANG         Override environment to select another language"
-msgstr ""
+msgstr "--locale LANG         Override environment to select another language"
 
 msgid "--version             Print version and exit"
-msgstr ""
+msgstr "--version             Print version and exit"
 
 msgid "--                    Options processing terminator"
-msgstr ""
+msgstr "--                    Options processing terminator"
 
 msgid "DICTPATH directory"
-msgstr ""
+msgstr "DICTPATH directory"
 
 msgid "not found"
-msgstr ""
+msgstr "not found"
 
 msgid "None of the directories specified in DICTPATH found"
-msgstr ""
+msgstr "None of the directories specified in DICTPATH found"
 
 msgid "Dictionary pathname doesn't exist"
-msgstr ""
+msgstr "Dictionary pathname doesn't exist"
 
 msgid "The selected dictionary doesn't seem to be of ABU or DELA type"
-msgstr ""
+msgstr "The selected dictionary doesn't seem to be of ABU or DELA type"
 
 msgid "Syntax error"
-msgstr ""
+msgstr "Syntax error"
 
 msgid "Option -c/--columns is expecting an integer argument"
-msgstr ""
+msgstr "Option -c/--columns is expecting an integer argument"
 
 msgid "Option -c/--columns is expecting 1, 2 or 4 columns"
-msgstr ""
+msgstr "Option -c/--columns is expecting 1, 2 or 4 columns"
 
 msgid "Option -d/--dictionary is expecting a valid pathname"
-msgstr ""
+msgstr "Option -d/--dictionary is expecting a valid pathname"
 
 msgid "time"
-msgstr ""
+msgstr "time"
 
 msgid "lines"
-msgstr ""
+msgstr "lines"
 
 msgid "conjugations"
-msgstr ""
+msgstr "conjugations"
 
 msgid "Key"
-msgstr ""
+msgstr "Key"
 
 msgid "Line"
-msgstr ""
+msgstr "Line"
 
 msgid "More than one key found for"
-msgstr ""
+msgstr "More than one key found for"
 
 msgid "Only considering the first one"
-msgstr ""
+msgstr "Only considering the first one"
 
 msgid "Infinitif passé not found for"
-msgstr ""
+msgstr "Infinitif passé not found for"
 
 msgid "auxiliary"
-msgstr ""
+msgstr "auxiliary"
 
 msgid "1st group"
-msgstr ""
+msgstr "1st group"
 
 msgid "2nd group"
-msgstr ""
+msgstr "2nd group"
 
 msgid "3rd group"
-msgstr ""
+msgstr "3rd group"
 
 msgid "unknown group"
-msgstr ""
+msgstr "unknown group"
 
 msgid "model for verbs like"
-msgstr ""
+msgstr "model for verbs like"
 
 msgid "conjugated like"
-msgstr ""
+msgstr "conjugated like"
 
 msgid "Conjugation tables for"
-msgstr ""
+msgstr "Conjugation tables for"
 
 msgid "Unknown inflected dictionary format"
-msgstr ""
+msgstr "Unknown inflected dictionary format"
 
 msgid "conjuguer expects at least one argument"
-msgstr ""
+msgstr "conjuguer expects at least one argument"
 
 msgid "is not in the dictionary used"
-msgstr ""
+msgstr "is not in the dictionary used"
 
 msgid "If it really exists, it would be"
-msgstr ""
+msgstr "If it really exists, it would be"
 
