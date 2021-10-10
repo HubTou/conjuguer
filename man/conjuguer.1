@@ -9,8 +9,8 @@
 .Op Fl c|--columns Ar NUM
 .Op Fl d|--dictionary Ar PATH
 .Op Fl n|--nocolor
-.Op Fl D|--DELA
 .Op Fl A|--ABU
+.Op Fl D|--DELA
 .Op Fl -debug
 .Op Fl -help|-?
 .Op Fl -locale Ar LANG
@@ -38,6 +38,12 @@ The dictionary will be selected from the
 environment variable, or obtained from the
 .Fl d|--dictionary
 option if used. The dictionary type is automatically detected.
+.Pp
+You can convert entries from a dictionary format to the other, using the
+.Fl A|--ABU
+and
+.Fl D|--DELA
+options.
 .Ss OPTIONS
 .Op Fl c|--columns Ar NUM
 Choose number of columns to display between 1, 2 or 4
@@ -48,11 +54,11 @@ Select a specific dictionary
 .Op Fl n|--nocolor
 Disable color output
 .Pp
-.Op Fl D|--DELA
-Enable DELA format output
-.Pp
 .Op Fl A|--ABU
 Enable ABU format output
+.Pp
+.Op Fl D|--DELA
+Enable DELA format output
 .Pp
 .Op Fl -debug
 Enable debug mode
@@ -121,6 +127,8 @@ for stripping ANSI sequences in strings.
 The results are only as good (or bad) as what's included in the dictionary used.
 The data in both the ABU and DELA dictionaries obviously contains errors, often on the same verbs...
 I do not know yet the proportion of correct conjugations.
+.Pp
+When converting from a dictionary format to the other, you'll lose semantics information (such a +z1, +AE, etc.).
 .Sh BUGS
 There are probably lots of peculiarities that would need specific processing,
 the verbs conjugated with the "etre" auxiliary when used with a pronoun for example.

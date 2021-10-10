@@ -11,8 +11,8 @@ conjuguer — conjugaison des verbes Francais
 \[-c|--columns NUM\]
 \[-d|--dictionary PATH\]
 \[-n|--nocolor\]
-\[-D|--DELA\]
 \[-A|--ABU\]
+\[-D|--DELA\]
 \[--debug\]
 \[--help|-?\]
 \[--locale LANG\]
@@ -33,14 +33,16 @@ The dictionary will be selected from the *DICTPATH* environment variable,
 or obtained from the *-d|--dictionary* option if used.
 The dictionary type is automatically detected.
 
+You can convert entries from a dictionary format to the other, using the *-A|--ABU* and *-D|--DELA* options.
+
 ### OPTIONS
 Options | Use
 ------- | ---
 -c\|--columns NUM|Choose number of columns to display between 1, 2 or 4
 -d\|--dictionary PATH|Select a specific dictionary
 -n\|--nocolor|Disable color output
--D\|--DELA|Enable DELA format output
 -A\|--ABU|Enable ABU format output
+-D\|--DELA|Enable DELA format output
 --debug|Enable debug mode
 --help\|-?|Print usage and a short help message and exit
 --locale LANG|Override environment to select another language
@@ -91,6 +93,8 @@ The source code also includes a [snippet of code](https://stackoverflow.com/ques
 The results are only as good (or bad) as what's included in the dictionary used.
 The data in both the ABU and DELA dictionaries obviously contains errors, often on the same verbs...
 I do not know yet the proportion of correct conjugations.
+
+When converting from a dictionary format to the other, you'll lose semantics information (such a +z1, +AE, etc.).
 
 ## BUGS
 There are probably lots of peculiarities that would need specific processing,

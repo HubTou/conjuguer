@@ -21,7 +21,7 @@ from .verbs import aux, etre_aux, both_aux, patterns
 from .blank import blank_verb
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.5.0 (October 3, 2021) by Hubert Tournier $"
+ID = "@(#) $Id: conjuguer - conjugaison des verbes Français v0.5.1 (October 10, 2021) by Hubert Tournier $"
 
 # Default parameters. Can be overcome by environment variables, then command line options
 parameters = {
@@ -106,7 +106,7 @@ def display_help():
     print(_("usage: conjuguer [--debug] [--help|-?] [--locale LANG] [--version]"), file=sys.stderr)
     print(
         "       "
-        + _("[-c|--columns NUMBER] [-n|--nocolor] [-D|--DELA] [-A|--ABU]"),
+        + _("[-c|--columns NUMBER] [-n|--nocolor] [-A|--ABU] [-D|--DELA]"),
         file=sys.stderr
     )
     print("       " + _("[-d|--dictionary PATH]"), file=sys.stderr)
@@ -121,8 +121,8 @@ def display_help():
     )
     print("  " + _("-d|--dictionary PATH  Select a specific dictionary"), file=sys.stderr)
     print("  " + _("-n|--nocolor          Disable color output"), file=sys.stderr)
-    print("  " + _("-D|--DELA             Enable DELA format output"), file=sys.stderr)
     print("  " + _("-A|--ABU              Enable ABU format output"), file=sys.stderr)
+    print("  " + _("-D|--DELA             Enable DELA format output"), file=sys.stderr)
     print("  " + _("--debug               Enable debug mode"), file=sys.stderr)
     print(
         "  " + _("--help|-?             Print usage and this help message and exit"),
@@ -531,6 +531,9 @@ def fill_verb_from_abu_dictionary_data(verb, conjugations, auxiliary):
             number = ""
             person = ""
             gender = ""
+            if len(part) == 1:
+                number = "s"
+                gender = "m"
             if len(part) >= 2:
                 if part[1] == "SG":
                     number = "s"
@@ -1009,6 +1012,15 @@ def print_ABU_inflections(verb):
 
 
 ################################################################################
+def escape_DELA_special_characters(verb):
+    """Escape "-", "," and "." characters with a backslash"""
+    verb = verb.replace("-", "\\-")
+    verb = verb.replace(",", "\\,")
+    verb = verb.replace(".", "\\.")
+    return verb
+
+
+################################################################################
 def print_DELA_inflections(verb):
     """Print a verb conjugations in DELA format"""
     inflected_verb = {}
@@ -1034,9 +1046,20 @@ def print_DELA_inflections(verb):
 
     for key in inflected_verb.keys():
         if key == verb["Infinitif"]["Présent"]:
-            print("{},.V{}".format(key, inflected_verb[key]))
+            print(
+                "{},.V{}".format(
+                    escape_DELA_special_characters(key),
+                    inflected_verb[key]
+                )
+            )
         else:
-            print("{},{}.V{}".format(key, verb["Infinitif"]["Présent"], inflected_verb[key]))
+            print(
+                "{},{}.V{}".format(
+                    escape_DELA_special_characters(key),
+                    escape_DELA_special_characters(verb["Infinitif"]["Présent"]),
+                    inflected_verb[key]
+                )
+            )
 
 
 ################################################################################
